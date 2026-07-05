@@ -1,0 +1,139 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[maxcitenames=1, mincitenames=1, backend=biber]{biblatex}
+\addbibresource{bibliography.bib}
+
+% custom command for custom author, year style citation
+\DeclareCiteCommand{\aycite}
+  {(}
+  {\printtext[bibhyperref]{\printnames{labelname},\addspace\printfield{year}}}
+  {;\addspace}
+  {)}
+  
+
+\title{Abuse Detection on Code-Mixed Roman Urdu via Extended Transformers}
+\author{\bf Zeeshan Azeem \\ \href{mailto:01-134232-147@student.bahria.edu.pk} {01-134232-147@student.bahria.edu.pk}
+\and \bf Daud Hussain \\ \href{mailto:01-168252-003@student.bahria.edu.pk} {01-168252-003@student.bahria.edu.pk}}
+\begin{document}
+\maketitle
+\begin{abstract}
+Today, most interactions happen on social media platforms. The exchange of opposing views can sometimes lead to the use of abusive language. So, research on Hate Speech Detection (HSD) is ongoing. There exist many approaches to solve HSD, such as Machine Learning (ML) SVM classifiers and Deep Learning (DL) Transformers. This research aims to study HSD for Roman Urdu, as it is the prominent form of Urdu spoken on the Internet. We propose a Transformer-based solution, fine-tuning XLM-RoBERTa (XLM-R) for HSD. Research shows that XLM-R has outperformed many other Cross-Lingual Models (XLMs) by a large margin. It also performs well on low-resource languages such as Urdu and Swahili.
+\end{abstract}
+\section{Introduction}
+The use of social media networks has been increasing rapidly in recent times. There are platforms for both casual and professional interactions, such as Facebook, Instagram, TikTok, and LinkedIn. People communicate and express their views on these platforms. Differences of opinion can sometimes turn into harsh words, which can often lead to hate speech\cite{onlinehate}. Different forms of hate speech exist, such as religious hate, racial hate, and gender-based hate\cite{socialmediaonlinehate}. With the rise of abuse on these platforms, there is a need for a solution. Numerous solutions have already been proposed, including the use of SVM classifiers, RNNs, LSTMs, and variations of Transformer models \cite{bilaletal}\cite{ashiqetal}. This study aims to detect hate speech and abuse written in Roman Urdu, as it is the predominant form of Urdu used on social media platforms. We use XLM-RoBERTa, a variant of BERT specifically developed for cross-lingual language understanding (XLU). The model outperforms many of the previous implementations of XLMs, specifically for low-resource languages such as Swahili and Urdu. XNLI Accuracy increased by 15.7\% for Swahili and 11.4\% for Urdu\cite{xlmrobertaresults}.
+\section{Literature Review}
+\paragraph{}
+From ML SVM classifiers to DL LSTMs, RNNs, and BERT, many approaches have been suggested for Roman Urdu HSD. Each study focused on a different approach, but HSD remains a text classification problem  under supervised learning.
+\paragraph{}
+A comprehensive overview of all the studies is given below, along with their corpora:
+\newline\newline
+\aycite{ashiqetal} proposed a hybrid model where DL models such as CNN, LSTM, GRU, and BERT were used as feature extractors and ML classifiers such as SVM were used for classification. The corpora used here were HS-RU-20\cite{hsru20corpus} and RUHSOLD\cite{ruhsoldcorpus}.
+\newline\newline
+\aycite{bilaletal} deployed a Transformer-based model for feature extraction, using TokenAndPositionEmbedding as word embedding scheme where an token embedding is applied to input (hate speech) and afterwards position embedding is applied. Text Classification was also done via a Transformer-based model. The corpus they used was RU-HSD-30K\cite{ruhsd30kcorpus}.
+\newline\newline
+\aycite{dewanietal} employed multiple DL models for HSD, such as CNN, RNN-LSTM, RNN-BiLSTM, and compared their results. They found that RNN-LSTM performed the best with 85.5\% valication accuracy and an F1 score of 0.70. It was followed by RNN-BiLSTM with 85\% validation accuracy and an F1 score of 0.67. CNN performed the worst with an F1 score of only 0.52\cite{dewanietal}. The study notes that RNNs and LSTMS work better for sequential data like natural language.
+\newline\newline
+\aycite{razietal} studied the detection of cyberbullying and ways to detect its patterns. They used an original corpus that they generated during the research. For feature extraction they used m-BERT\cite{mbert2018} and MuRIL\cite{muril2021}, and for text classification, they had a classification network\cite{razietal}.
+\newline\newline
+\aycite{maqbooletal} used a fine-tuned variant of m-BERT\cite{modifiedmbert}, which extended the limit of 512 tokens of m-BERT, for researching and detecting abuse in Roman Urdu. RUHSOLD\cite{ruhsoldcorpus} was used as the corpus.
+
+\section{Methodology}
+\subsection{Research Design Overview}
+This research uses a supervised deep learning framework to sort out the problem of abusive language detection in code-mixed Roman Urdu social media content. To effectively capture abuse/hate-speech, we propose employing XLM-RoBERTa(Cross-Lingual Model, RoBERTa)\cite{xlmrobertaresults} and finetuning it on RUHSOLD\cite{ruhsoldcorpus} and HS-RU-20\cite{hsru20corpus} corpora. 
+\newline
+The methodology comprises four phases:
+\begin{enumerate}
+\item Data Collection and Corpus Construction
+\item Data Preprocessing and Normalization
+\item Corpus Class Balancing
+\item Model Architecture and Configuration
+\end{enumerate}
+\subsection{Data Collection and Corpus Construction}
+A good dataset helps in producing good results for mixed-language abusive words detection. This study is a combination of data from two existing corpora. These corpora are combined before the model is fine-tuned on them.
+\subsubsection{RUHSOLD}
+The Roman Urdu Hate Speech and Offensive Language Dataset (RUHSOLD) is taken as the primary corpus. It contains multi-label annotated posts across six detailed categories, like religious hate, sexism, profanity, general abuse, offensive content, and normal speech. This dataset was also used by Ashiq et al\cite{ashiqetal} in their mBERT and SVM system, making it a base for direct comparison. RUHSOLD originally contains mixed language text because Pakistani Twitter users commonly switch between Roman Urdu and English within the same post.
+\subsubsection{HS-RU-20}
+HS-RU-20 is a Roman Urdu hate speech corpus that is an even more diversified form of abusive language available to the model\cite{hsru20corpus}. Both datasets reduce overfitting. HS-RU-20 contains content related to slang and neologisms usage, which is not found in RUHSOLD, making the model broader and covering a large range of such words.
+
+\subsection{Data Preprocessing and Normalization}
+Roman Urdu comes with its own set of preprocessing difficulties. Unlike most standard NLP tasks, there is no fixed way to spell words. For example, the word "acha" (meaning good) can appear as "acha", "aacha", "a'cha", or many other variations within the same dataset. The preprocessing pipeline needs to manage this discrepancy while making sure no meaningful words are lost in the process.
+\subsubsection{Text Normalization}
+The following normalization techniques are applied to every input post:
+\begin{enumerate}
+\item \textbf{Unicode normalization} (NFC form) to capture the same character in different forms.
+\item \textbf{URL and mention removal} HTTP links and @ mentions are replaced with URL and USER placeholder tokens to remove noise while keeping the sentence structure the same
+\item \textbf{Hashtag segmentation} hashtags are split at camelCase boundaries or underscores, and the constituent words are retained, since hashtags in Roman Urdu often encode meaningful content
+\item \textbf{Repeated character normalization} sequences of three or more identical characters are collapsed to two (e.g., “loooool” to “lool”) to reduce vocabulary explosion.
+\item \textbf{Emoji to text conversion} emojis are converted to their English descriptions using the Python emoji library before tokenization, rather than being removed, because emoji usage is semantically informative in abusive social media posts.
+\end{enumerate}
+\subsection{Corpus Class Balancing}
+We implement class balancing on the corpora through cost-sensitive learning instead of using re-sampling based approaches. Specifically the class weights are calculated according to the following formula:
+\[\frac{N}{K.n_c}\]
+where N is the total number of training samples, K is the number of classes and $n_c$ is the frequency of class c in the dataset. This formula inversely scales the penality of each class with proportion to its frequency $n_c$. This ensures that minor classes receive larger penality to compensate for the class imbalance.
+
+\subsection{Model Architecture and Configuration}
+\paragraph{}
+The architecture mainly concentrates on XLM RoBERTa base, a transformer that is pretrained on 2.5 TB of Common Crawl data\cite{xlmrobertaresults} comprising 100 languages using masked language modelling (MLM). mBERT , used b Ashiq et al, was trained only on Wikipedia text\cite{mbert2018}, while XLM RoBERTa' s Common Crawl pretraining covers a much broader range of casual, everyday, and social media language. It almost matches the text found in Roman Urdu Twitter posts.
+
+\paragraph{}
+Following table describes the configuration used for the XLM-RoBERTa model:
+\begin{center}
+\begin{tabular} { c | c}
+\hline
+ \textbf{Token max length} & 128 \\
+ \hline
+ \textbf{Head Dropout} & 0.30 \\
+ \hline
+ \textbf{No of Labels} & 4 \\
+ \hline
+ \textbf{Batch Size} & 64 \\
+ \hline
+ \textbf{Learning Rate} & $2^{e-5}$ \\
+ \hline
+ \textbf{Layers Trained} & All 12 layers \\
+  \hline
+  \textbf{Optimizer} & AdamW \\
+  \hline
+  \textbf{Activation} & SoftMax \\
+\end{tabular}
+\end{center}
+Architecture diagram for XLM-RoBERTa-base is as follows:
+\begin{figure}[H] 
+  \centering
+  \includegraphics[width=0.5\textwidth]{xlm_roberta_architecture_only}
+  \caption{XLM-RoBERTa Architecture}
+  \label{fig:xlmroberta}
+\end{figure}
+The Figure \ref{fig:xlmroberta} describes the general architecture for the base variant of the XLM-RoBERTa model. The input is tokenized via the SentencePiece tokenizer, which is trained on over 100 languages simultaneously, having a vocabulary of 250002 words. The SentencePiece tokenizer tokenizes the input, not based on some delimiter like whitespace or newline, but instead on "subword" units\cite{sentencepiecetokenizer}. The tokenizer's vocabulary is referenced to generate token IDs. The tokenized input is then passed to the Embedded layer. Three types of embeddings are done on the tokenized input. Firstly, the token IDs are converted into 768-dimensional vectors. This is known as token embedding. Since the transformer is unaware of word order, i.e, due to self-attention, position embedding is needed to fix that; two sentences with identical words and different word positioning would be considered identical by the transformer. Type embedding is used when multiple sentences need to be fed together. After passing through the embedding layer, the token vector is then passed to the Transformer block. In XLM-RoBERTa-base, the transformer block has 12 layers. Each layer has 12 self-attention heads. The output from the last layer of the Transformer is then summarized into a special [CLS] token containing the context of all the previous tokens. Then it's passed through a Dropout layer for regularization and goes to the linear layer to be mapped to all the n classes. Lastly, SoftMax can be used as an activation to get the actual results.
+
+\section{Experimental Results}
+\subsection{Training Configuration}
+\paragraph{}
+We ran our experiments on Google Colab , free tier , using the T4 GPU. We used AdamW as the optimizer and used a learning rate of $2^{e-5}$. The training ran for upto 8 epochs. Batch size of 64 was used. Corpus splitting was 70 / 15 / 15 for training, validation, testing respectively.
+
+\subsection{Training Results}
+\paragraph{}
+In our training results, we found that while the results from our finetuning were promising, they failed to compete with other HSD implementations. The main reason behind it was the imbalanced classes in our corpus. Though our main goal was to just showcase how XLM-RoBERTa can be fine-tuned to detect hate speech. Following is the evaluation table from our experimentation:
+\begin{center}
+\begin{tabular}{c|c|c|c}
+     \textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score}  \\
+     \textbf{Normal} & 0.85 & 0.83 & 0.81 \\
+     \textbf{Abusive} & 0.62 & 0.58 & 0.60 \\
+     \textbf{Offesive} & 0.70 & 0.69 & 0.69 \\
+     \textbf{Hate} &  0.60 & 0.69 & 0.64 \\
+     & & & \\ 
+     \textbf{Overall accuracy} & & & \textbf{0.74} \\
+     \textbf{Macro Average} & 0.69 & 0.69 & 0.69 \\
+     \textbf{Weighted Average} & 0.74 & 0.74 & 0.74  
+\end{tabular}
+\end{center}
+\section{Conclusion}
+\paragraph{}
+In this work, we showed how an extended variant of BERT, a transformer, can be used for the detection of hate speech. We also showed the techniques used for corpus collection, preprocessing, and class balancing. With a bigger corpus, greater computing power, and better class balancing, our approach can be improved to match, and even best, the current implementations of HSD.
+\printbibliography
+\end{document}
